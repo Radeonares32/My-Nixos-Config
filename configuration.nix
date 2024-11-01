@@ -14,6 +14,9 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  nix.settings.experimental-features = [ "nix-command" "flakes" ]; 
+
+
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -51,6 +54,11 @@
   # Enable the LXQT Desktop Environment.
   services.xserver.displayManager.lightdm.enable = true;
   services.xserver.desktopManager.lxqt.enable = true;
+  
+ 
+  #Enable Xfce4
+  services.xserver.desktopManager.xfce.enable = true;
+  services.displayManager.defaultSession = "xfce";
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -87,7 +95,7 @@
   users.users.radeonares = {
     isNormalUser = true;
     description = "radeonares";
-    extraGroups = [ "networkmanager" "wheel" "libvirtd" ];
+    extraGroups = ["docker" "networkmanager" "wheel" "libvirtd" "bluetooth" ];
     packages = with pkgs; [
     #  thunderbird
     ];
@@ -95,6 +103,9 @@
 
   # Install firefox.
   programs.firefox.enable = true;
+
+  programs.nix-ld.enable = true;
+  
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -123,14 +134,43 @@
     docker
     docker-compose
     yarn
+    pkg-config
+    mesa
+    unzip
+    bun
+    slack
+    dbeaver-bin
+    postman
+    atlauncher
+    #jdk17
+    hmcl
+    virtualbox
+    blueman
+    bluez
+    jdk8
+    xorg.libXrender
+    xorg.libXext
   ];
 
+  
+  #bluetooth
+  services.blueman.enable = true;
+  #services.bluetooth.enable = true;
 
+ 
   #virtualisation kvm options
   virtualisation.libvirtd.enable = true;
+  virtualisation.docker.enable = true;
   programs.virt-manager.enable = true;
   services.qemuGuest.enable = true;
   services.spice-vdagentd.enable = true;
+
+  #virtualbox
+  virtualisation.virtualbox.host.enable = true;
+  users.extraGroups.vboxusers.members = [ "radeonares" ];
+  virtualisation.virtualbox.host.enableExtensionPack = true;
+  virtualisation.virtualbox.guest.enable = true; 
+
 
  boot.binfmt.registrations.appimage = {
   wrapInterpreterInShell = false;
